@@ -7,7 +7,7 @@ heroImage: '/site.jpeg'
 
 *playtime was sourced via howlongtobeat.com*
 
-*Donut County*
+## Donut County
 
 ---
 
