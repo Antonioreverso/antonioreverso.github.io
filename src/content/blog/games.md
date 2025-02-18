@@ -17,7 +17,7 @@ heroImage: '/site.jpeg'
 | **Input**     | Keyboard, Controller |
 | **Playtime**  | 2 hours |
 | **Finished at** | 2025-02-18 |
-| **Price**     | 38.49R$ |
+| **Price**     | R$ 38.49 |
 | **Purchase**  | [Steam](https://store.steampowered.com/app/702670/Donut_County/) |
 
 Simply one of the most cozy games I've ever played. At times I got bored, but the story builds very well over time. It's a great game.
@@ -32,7 +32,7 @@ Simply one of the most cozy games I've ever played. At times I got bored, but th
 | **Input**     | Keyboard, Controller |
 | **Playtime**  | 2.5 hours |
 | **Finished at** | 2025-02-x |
-| **Price**     | 43.99R$ |
+| **Price**     | R$ 43.99 |
 | **Purchase**  | [Steam](https://store.steampowered.com/app/1206430/The_Unfinished_Swan/) |
 
 
