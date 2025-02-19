@@ -41,7 +41,7 @@ An absurdly beautiful game Annapurna knows how to make good games. The beginning
 
 ---
 
-| **Genre**     | Point-and-Click/SimulationDeveloper|
+| **Genre**     | Point-and-Click/Simulation|
 |--------------|----------------|
 | **Platforms** | Windows |
 | **Input**     | Keyboard |
