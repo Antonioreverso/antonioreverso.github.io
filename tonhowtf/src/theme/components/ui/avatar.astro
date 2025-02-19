@@ -1,0 +1,63 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+	url: string
+	alt?: string
+}
+
+const { url, alt, ...otherProps } = Astro.props
+---
+
+<script>
+	class AvatarComponent extends HTMLElement {
+		showAlt = true
+
+		constructor() {
+			super()
+			const img = this.querySelector('img')
+			if (img) {
+				img.onerror = () => {
+					this.showAlt = true
+					this.updateVisibility()
+				}
+				img.onload = () => {
+					this.showAlt = false
+					this.updateVisibility()
+				}
+			}
+			if (img?.complete) {
+				this.showAlt = false
+			}
+			this.updateVisibility()
+		}
+
+		updateVisibility() {
+			const placeholderDiv = this.querySelector('.placeholder')
+			const imgDiv = this.querySelector('.avatar.absolute')
+
+			if (placeholderDiv) {
+				placeholderDiv.classList.toggle('invisible', !this.showAlt)
+			}
+			if (imgDiv) {
+				imgDiv.classList.toggle('invisible', this.showAlt)
+				imgDiv.classList.toggle('visible', !this.showAlt)
+			}
+		}
+	}
+
+	customElements.define('avatar-component', AvatarComponent)
+</script>
+
+<avatar-component class="relative select-none block">
+	<div class:list={['avatar placeholder', 'visible']}>
+		<div {...otherProps}>
+			{alt}
+		</div>
+	</div>
+	<div class="avatar absolute top-0 left-0 invisible">
+		<div {...otherProps}>
+			<img src={url} alt={alt} loading="lazy" />
+		</div>
+	</div>
+</avatar-component>

@@ -1,0 +1,148 @@
+---
+import type { MarkdownHeading } from 'astro'
+import type { HTMLAttributes } from 'astro/types'
+
+type Props = HTMLAttributes<'div'> & {
+	headings: MarkdownHeading[]
+}
+
+const { headings, class: className, ...props } = Astro.props
+---
+
+<script>
+	class TocItem extends HTMLElement {
+		get anchor() {
+			return this.querySelector('a')
+		}
+
+		get relativeHeading() {
+			return document.getElementById(this.dataset.slug!)
+		}
+
+		activate = () => {
+			this.classList.add('active')
+			this.scrollIntoView({
+				behavior: 'smooth',
+				block: 'nearest',
+			})
+		}
+
+		deactivate = () => {
+			this.classList.remove('active')
+		}
+	}
+
+	class ArticleToc extends HTMLElement {
+		get items() {
+			return Array.from(this.querySelectorAll('toc-item'))
+		}
+
+		get mainScroll() {
+			return document.getElementById('main-scroll')!
+		}
+
+		connectedCallback() {
+			this.handleUpdate()
+			this.mainScroll.addEventListener('scroll', this.handleUpdate)
+		}
+
+		disconnectedCallback() {
+			this.mainScroll.removeEventListener('scroll', this.handleUpdate)
+		}
+
+		handleUpdate = () => {
+			if (this.items.length === 0) return
+
+			if (this.items.length === 1) {
+				this.items[0].activate()
+				return
+			}
+
+			const header = document.querySelector('header')
+			const headerHeight = header?.getBoundingClientRect().height ?? 0
+			const distance = headerHeight + 16
+
+			const itemsWithBbox = this.items
+				.map((item) => ({
+					bbox: item.relativeHeading?.getBoundingClientRect(),
+					item,
+				}))
+				.filter(({ bbox }) => !!bbox)
+				.map(({ bbox, item }) => ({
+					bbox: bbox!,
+					item,
+				}))
+
+			const firstPositiveIdx = itemsWithBbox.findIndex(
+				({ bbox }) => bbox.top >= 0,
+			)
+			let target: TocItem
+			if (firstPositiveIdx === -1) {
+				target = itemsWithBbox.at(-1)!.item
+			} else if (firstPositiveIdx === 0) {
+				target = itemsWithBbox[0].item
+			} else {
+				const firstPositiveItem = itemsWithBbox[firstPositiveIdx]
+				const nextPositiveItem = itemsWithBbox.at(firstPositiveIdx + 1)
+				if (firstPositiveItem.bbox.bottom < headerHeight) {
+					if (nextPositiveItem && nextPositiveItem.bbox.top <= distance) {
+						target = nextPositiveItem.item
+					} else {
+						target = firstPositiveItem.item
+					}
+				} else if (firstPositiveItem.bbox.top <= distance) {
+					target = firstPositiveItem.item
+				} else {
+					target = itemsWithBbox[firstPositiveIdx - 1].item
+				}
+			}
+
+			itemsWithBbox.forEach(({ item }) => {
+				if (item === target) {
+					item.activate()
+				} else {
+					item.deactivate()
+				}
+			})
+		}
+	}
+
+	declare global {
+		interface HTMLElementTagNameMap {
+			'toc-item': TocItem
+			'article-toc': ArticleToc
+		}
+	}
+
+	customElements.define('toc-item', TocItem)
+	customElements.define('article-toc', ArticleToc)
+</script>
+
+<article-toc
+	class:list={['flex flex-col gap-2 flex-nowrap', className]}
+	{...props}
+>
+	{
+		headings.map(({ slug, text, depth }) => (
+			<toc-item data-slug={slug} class="flex cursor-pointer">
+				<div style={{ width: `${depth - 1}rem` }} />
+				<a href={`#${slug}`} class="flex-1">
+					{text}
+				</a>
+			</toc-item>
+		))
+	}
+</article-toc>
+
+<style is:global>
+	article-toc {
+		toc-item {
+			&.active {
+				@apply bg-neutral text-neutral-content;
+			}
+			a {
+				@apply p-2 block transition-colors;
+			}
+		}
+	}
+</style>

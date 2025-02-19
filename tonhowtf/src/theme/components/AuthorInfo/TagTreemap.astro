@@ -1,0 +1,110 @@
+---
+/* eslint-disable style/max-statements-per-line */
+// @ts-nocheck
+import * as d3 from 'd3'
+import { JSDOM } from 'jsdom'
+import { sortBy } from 'lodash-es'
+import { type IPostInfo, aggregateByTag } from '../../utils/post'
+
+const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>')
+const document = dom.window.document
+
+export interface Props {
+	posts: IPostInfo[]
+}
+
+const { posts } = Astro.props
+const stats = aggregateByTag(posts)
+const counts = sortBy(
+	Array.from(stats.entries()).map(([k, v]) => [k, v.length] as const),
+	(d) => d[1],
+)
+	.reverse()
+	.map(([k, v]) => ({ value: v, name: k }))
+
+function createTreemap(data: typeof counts) {
+	const width = 300
+	const height = 500
+
+	// Specify the color scale.
+	const color = d3.scaleOrdinal(
+		data.map((d) => d.name),
+		d3.schemeTableau10,
+	)
+
+	// Compute the layout.
+	const root = d3
+		.hierarchy({ children: data })
+		.sum((d) => d.value)
+		.sort((a, b) => b.value - a.value)
+
+	d3.treemap().size([width, height]).padding(1).round(true)(root)
+
+	// Create the SVG container.
+	const svg = d3
+		.select(document.createElement('svg'))
+		.attr('viewBox', [0, 0, width, height])
+		.attr('width', width)
+		.attr('height', height)
+		.attr('style', 'max-width: 100%; height: auto; font: 10px sans-serif;')
+
+	// Add a cell for each leaf of the hierarchy.
+	const leaf = svg
+		.selectAll('g')
+		.data(root.leaves())
+		.join('g')
+		.attr('transform', (d) => `translate(${d.x0},${d.y0})`)
+
+	// Append a tooltip.
+	const format = d3.format(',d')
+	leaf.append('title').text(
+		(d) =>
+			`${d
+				.ancestors()
+				.reverse()
+				.map((d) => d.data.name)
+				.join('.')}\n${format(d.value)}`,
+	)
+
+	// Append a color rectangle.
+	leaf
+		.append('rect')
+		// .attr('id', d => (d.leafUid = DOM.uid('leaf')).id)
+		.attr('fill', (d) => {
+			while (d.depth > 1) d = d.parent
+			return color(d.data.name)
+		})
+		.attr('fill-opacity', 0.6)
+		.attr('width', (d) => d.x1 - d.x0)
+		.attr('height', (d) => d.y1 - d.y0)
+
+	// Append a clipPath to ensure text does not overflow.
+	leaf
+		.append('clipPath')
+		// .attr('id', d => (d.clipUid = DOM.uid('clip')).id)
+		.append('use')
+	// .attr('xlink:href', d => d.leafUid.href)
+
+	// Append multiline text. The last line shows the value and has a specific formatting.
+	leaf
+		.append('text')
+		.selectAll('tspan')
+		.data((d) => d.data.name.split(/(?=[A-Z][a-z])|\s+/g))
+		.join('tspan')
+		.attr('x', 3)
+		.attr(
+			'y',
+			(d, i, nodes) => `${(i === nodes.length - 1) * 0.3 + 1.1 + i * 0.9}em`,
+		)
+		.attr('fill-opacity', (d, i, nodes) =>
+			i === nodes.length - 1 ? 0.7 : null,
+		)
+		.text((d) => d)
+
+	return Object.assign(svg.node(), { scales: { color } })
+}
+
+const res: string = createTreemap(counts).outerHTML
+---
+
+<div class="flex flex-col w-full" set:html={res} />

@@ -1,0 +1,14 @@
+---
+import type { ClassValue } from 'clsx'
+
+interface Props {
+	className?: ClassValue
+	href?: string
+}
+
+const { className, href } = Astro.props
+---
+
+<a class:list={['hover:underline underline-offset-2', className]} href={href}>
+	<slot />
+</a>

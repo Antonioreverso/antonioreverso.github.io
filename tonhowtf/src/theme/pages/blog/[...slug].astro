@@ -1,0 +1,19 @@
+---
+import type { InferGetStaticPropsType } from 'astro'
+import { getCollection } from 'astro:content'
+import PostLayout from '../../layouts/PostLayout.astro'
+import { getSafePostsInfo } from '../../utils/post'
+
+export async function getStaticPaths() {
+	const posts = await getSafePostsInfo(getCollection('blog'))
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: post,
+	}))
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>
+const props = Astro.props
+---
+
+<PostLayout {...props} />

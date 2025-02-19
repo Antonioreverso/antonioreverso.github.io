@@ -1,0 +1,60 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import ShareButton from './ShareButton.astro'
+import Translate from './Translate.astro'
+import { useI18nSource } from '../i18n'
+
+type Props = HTMLAttributes<'div'> & {
+	title?: string
+	author?: string
+	url: string
+	description?: string
+}
+
+const {
+	title,
+	author,
+	url,
+	description,
+	class: className,
+	...props
+} = Astro.props
+
+const t = useI18nSource()
+---
+
+<section
+	class:list={[
+		'card relative border border-base-300 shadow-md w-full p-4 flex flex-col gap-2 overflow-hidden',
+		className,
+	]}
+	{...props}
+>
+	<!-- <Copyright
+		class="absolute -bottom-12 -right-12 size-52 -z-[1] overflow-clip opacity-20"
+	/> -->
+	<div
+		class="i-ri:copyright-line absolute -bottom-12 -right-12 size-52 -z-[1] overflow-clip opacity-20"
+	>
+	</div>
+	{title && <div class="font-bold">{title}</div>}
+	{
+		author && (
+			<div class="font-semibold">
+				<Translate t={t.author} />: {author}
+			</div>
+		)
+	}
+	<a class="text-sm" href={url}>
+		{decodeURIComponent(url)}
+	</a>
+	<Translate class="text-sm" t={t.licenseNotice} />
+	<ShareButton
+		title={title}
+		url={url}
+		text={description}
+		class="absolute right-0 top-0 m-2"
+	>
+		<div class="i-lets-icons:link size-6"></div>
+	</ShareButton>
+</section>

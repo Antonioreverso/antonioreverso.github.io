@@ -1,0 +1,127 @@
+---
+import config from '../consts'
+import { getEntry, render } from 'astro:content'
+import { isNil } from 'ramda'
+import ArticleToc from '../components/ArticleToc.astro'
+import BaseHead from '../components/BaseHead.astro'
+import Footer from '../components/Footer.astro'
+import Giscus from '../components/Giscus.astro'
+import Header from '../components/Header.astro'
+import LicenseCard from '../components/LicenseCard.astro'
+import ScrollArea from '../components/ScrollArea.astro'
+import { getLanguageCode } from '../utils/utils'
+import '../styles/global.scss'
+import '../styles/post.scss'
+import AuthorInfoCard from '../components/AuthorInfo/AuthorInfoCard.astro'
+import TagPercentage from '../components/AuthorInfo/TagPercentage.astro'
+
+type Props = {
+	slug: string
+}
+
+const { slug } = Astro.props
+
+const product = await getEntry('blog', slug)
+if (isNil(product)) {
+	throw new Error(`${slug} not found`)
+}
+
+const { Content, headings } = await render(product)
+
+const {
+	data: { title, description },
+} = product
+
+const hasHeadings = headings && headings.length > 0
+---
+
+<script>
+	import mediumZoom from 'medium-zoom'
+	mediumZoom(document.querySelectorAll('article img'), {
+		background: '#000',
+	})
+</script>
+
+<html lang={getLanguageCode()}>
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+	<body class="flex flex-col h-screen">
+		<Header />
+		<ScrollArea class="flex-1 flex w-full">
+			{
+				hasHeadings ? (
+					<>
+						<ScrollArea class="basis-1/5 lg:flex hidden">
+							<ScrollArea class="mx-auto max-w-80 p-1 md:p-2 gap-4 w-full">
+								<AuthorInfoCard class="p-2 lg:p-4 lg:px-8" />
+							</ScrollArea>
+						</ScrollArea>
+						<ScrollArea id="main-scroll" class="flex-1">
+							<main class="w-full p-4 mx-auto flex flex-col gap-8">
+								<article
+									class="prose max-w-full dark:prose-invert"
+									data-pagefind-body
+								>
+									<Content />
+								</article>
+								<LicenseCard
+									title={title}
+									url={Astro.url.href}
+									author={config.author.name}
+									description={`@${config.author.name}`}
+								/>
+								{config.comment?.giscus && (
+									<Giscus {...config.comment.giscus} />
+								)}
+							</main>
+							<Footer />
+						</ScrollArea>
+						<ScrollArea class="basis-1/4 lg:basis-1/5 md:(flex border-l border-neutral) flex-col hidden">
+							<ArticleToc headings={headings} />
+						</ScrollArea>
+					</>
+				) : (
+					<>
+						<ScrollArea class="basis-1/4 lg:basis-1/5 md:flex hidden">
+							<ScrollArea class="mx-auto max-w-80 p-1 md:p-2 gap-4 w-full">
+								<AuthorInfoCard class="p-2 lg:p-4 lg:px-8" />
+							</ScrollArea>
+						</ScrollArea>
+						<ScrollArea id="main-scroll" class="flex-1">
+							<main class="p-4 mx-auto flex flex-col gap-8">
+								<article
+									class="prose max-w-full dark:prose-invert"
+									data-pagefind-body
+								>
+									<Content />
+								</article>
+								<LicenseCard
+									title={title}
+									url={Astro.url.href}
+									author={config.author.name}
+									description={`@${config.author.name}`}
+								/>
+								{config.comment?.giscus && (
+									<Giscus {...config.comment.giscus} />
+								)}
+							</main>
+							<Footer />
+						</ScrollArea>
+					</>
+				)
+			}
+		</ScrollArea>
+	</body>
+</html>
+
+<style>
+	.medium-zoom--opened {
+		.medium-zoom-overlay {
+			@apply z-50 opacity-80;
+		}
+		.medium-zoom-image {
+			@apply z-50;
+		}
+	}
+</style>

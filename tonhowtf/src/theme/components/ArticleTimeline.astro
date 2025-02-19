@@ -1,0 +1,49 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import type { IPostInfo } from '../utils/post'
+import dayjs from 'dayjs'
+import { groupBy } from 'lodash-es'
+import * as R from 'ramda'
+
+type Props = HTMLAttributes<'div'> & {
+	articles: IPostInfo[]
+}
+
+const { articles, class: className, ...otherProps } = Astro.props
+
+const groupedArticles = groupBy(articles, (d) =>
+	new Date(d.ctime).getFullYear(),
+)
+
+const getCtimeAsNumber = R.pipe(R.prop('ctime'), (ctime: string | number) =>
+	ctime ? new Date(ctime).getTime() : 0,
+)
+
+const descendByCreateTime = R.descend(getCtimeAsNumber)
+
+function formatDatetime(datetime: number | Date) {
+	return dayjs(datetime).format('MM-DD')
+}
+---
+
+<div class:list={['font-mono flex flex-col gap-1', className]} {...otherProps}>
+	{
+		Object.entries(groupedArticles).map(([year, articles]) => (
+			<div class="my-4">
+				<div class="text-3xl font-extrabold leading-relaxed opacity-80">
+					{year}
+				</div>
+				<ul class="flex flex-col gap-2 text-xl">
+					{R.sort(descendByCreateTime, articles).map((d: IPostInfo) => (
+						<li class="hover:(bg-neutral text-neutral-content) rounded-box transition">
+							<a href={d.link} class="flex gap-x-2">
+								<time class="pr-4">{formatDatetime(d.ctime)}</time>
+								<p class="flex-1 truncate">{d.title}</p>
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		))
+	}
+</div>

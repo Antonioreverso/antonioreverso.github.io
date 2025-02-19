@@ -1,0 +1,48 @@
+* {
+	overflow-wrap: break-word;
+	word-break: break-word;
+	white-space: normal;
+}
+
+.prose {
+	code {
+		overflow-wrap: break-word;
+		word-break: break-word;
+		white-space: normal;
+	}
+
+	.astro-code code {
+		&,
+		* {
+			white-space: pre;
+		}
+	}
+	img {
+		max-width: 100%;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		> a:nth-child(1) {
+			@apply no-underline;
+
+			&:hover {
+				@apply underline relative;
+				&::before {
+					@apply absolute -left-1 md:block hidden;
+					content: '#';
+					transform: translateX(-100%);
+				}
+			}
+		}
+	}
+	.footnotes {
+		.sr-only {
+			position: static;
+		}
+	}
+}

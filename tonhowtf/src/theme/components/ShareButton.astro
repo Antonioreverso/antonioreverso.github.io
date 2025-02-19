@@ -1,0 +1,40 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'button'> {
+	title?: string
+	text?: string
+	url?: string
+}
+const { title, text, url, class: className, ...btnProps } = Astro.props
+---
+
+<script>
+	class ShareButton extends HTMLElement {
+		readonly btn = this.querySelector('button')
+
+		connectedCallback() {
+			this.btn?.addEventListener('click', this.share)
+		}
+
+		disconnectedCallback() {
+			this.btn?.removeEventListener('click', this.share)
+		}
+
+		share = () => {
+			return navigator.share({
+				title: this.dataset.title,
+				text: this.dataset.text,
+				url: this.dataset.url,
+			})
+		}
+	}
+
+	customElements.define('share-button', ShareButton)
+</script>
+
+<share-button data-title={title} data-text={text} data-url={url}>
+	<button class:list={[className]} {...btnProps} aria-label="Share">
+		<slot />
+	</button>
+</share-button>

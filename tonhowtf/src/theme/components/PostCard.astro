@@ -1,0 +1,90 @@
+---
+import { Picture } from 'astro:assets'
+import type { ClassValue } from 'clsx'
+import { marked } from 'marked'
+import { formatDatetime } from '../utils/date'
+import { type IPostInfo, extractBeforeMore, getTagLink } from '../utils/post'
+import LinkButton from './ui/button.astro'
+
+export interface Props {
+	info: IPostInfo
+	className?: ClassValue
+}
+
+const { info, className } = Astro.props
+const summary = extractBeforeMore(info.body)
+const summaryHtml = marked(summary)
+---
+
+<div
+	class:list={[
+		':uno: flex relative rounded-box border border-base-300',
+		className,
+	]}
+>
+	<!-- cover -->
+	{
+		info.cover && (
+			<a href={info.link} class="absolute w-full h-full top-0 left-0">
+				<Picture
+					{...info.cover}
+					src={info.cover}
+					alt="cover"
+					loading="lazy"
+					formats={['avif', 'webp']}
+					width={Math.min(500, info.cover.width)}
+					class="h-full w-full object-cover rounded-box"
+				/>
+			</a>
+		)
+	}
+	<div
+		class:list={[
+			':uno: transition-colors flex w-full flex-col p-4 gap-2 rounded-box bg-base-100/75 hover:bg-base-200/60 backdrop-blur-none md:(p-6 gap-y-5)',
+		]}
+	>
+		<a
+			href={info.link}
+			class:list={[
+				':uno: relative transition block font-semibold text-xl md:text-2xl hover:(text-primary brightness-200) dark:(font-bold)',
+				':uno: before:(absolute w-1 h-full opacity-0 content-[""] transition bg-primary rounded-md -left-4 md:(-left-6) hover:(opacity-100))',
+				':uno: after:(absolute opacity-0 content-[""] i-lets-icons:expand-right size-5 inline transition bg-primary inline translate-y-1.5 hover:(opacity-100 translate-x-1))',
+			]}
+		>
+			{info.title}
+		</a>
+
+		<!-- tags -->
+		<div class:list={[':uno: flex items-center gap-x-2 hover:brightness-200']}>
+			{
+				info.tags.map((tag) => (
+					<LinkButton
+						className="p-0 h-full font-normal text-sm hover:text-primary"
+						href={getTagLink(tag)}
+					>
+						#{tag}
+					</LinkButton>
+				))
+			}
+		</div>
+
+		<!-- summary -->
+		{
+			summary.length > 0 && (
+				<article
+					class="break-all prose prose-sm max-w-none"
+					set:html={summaryHtml}
+				/>
+			)
+		}
+
+		<!-- metadata -->
+		<p class:list={[':uno: text-sm font-mono break-keep whitespace-nowrap']}>
+			{formatDatetime(info.ctime)}
+			·
+			{`${info.reading.words} Words`}
+			·
+			{info.reading.text}
+		</p>
+	</div>
+</div>

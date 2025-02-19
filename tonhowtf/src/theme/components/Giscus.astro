@@ -1,0 +1,11 @@
+---
+import type { GiscusConfig } from '../utils/config'
+
+type Props = GiscusConfig
+---
+
+<script>
+	import 'giscus'
+</script>
+
+<giscus-widget {...Astro.props}></giscus-widget>

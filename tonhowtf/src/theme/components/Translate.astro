@@ -1,0 +1,44 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+type Props = HTMLAttributes<'div'> & {
+	t: string
+}
+
+const { t, ...props } = Astro.props
+---
+
+<script>
+	import { getNavigatorLocale } from '../i18n/utils'
+	import { translate } from '../i18n'
+
+	class TranslateText extends HTMLElement {
+		get locale() {
+			return getNavigatorLocale()
+		}
+
+		get text() {
+			const text = this.dataset.t || ''
+			return translate({
+				locale: this.locale,
+				text,
+			})
+		}
+
+		update() {
+			if (this.innerText !== this.text) {
+				this.innerText = this.text
+			}
+		}
+
+		connectedCallback() {
+			this.update()
+			setInterval(() => {
+				this.update()
+			}, 1000)
+		}
+	}
+	customElements.define('t-text', TranslateText)
+</script>
+
+<t-text data-t={t} {...props}></t-text>

@@ -1,0 +1,48 @@
+---
+import type { GetStaticPaths } from 'astro'
+import { getCollection } from 'astro:content'
+import * as R from 'ramda'
+import ArticleTimeline from '../../../components/ArticleTimeline.astro'
+import Footer from '../../../components/Footer.astro'
+import HomeLayout from '../../../layouts/HomeLayout.astro'
+import {
+	aggregateByTag,
+	getAllPostsInfo,
+	type IPostInfo,
+} from '../../../utils/post'
+
+export interface Props {
+	tag: string
+	posts: IPostInfo[]
+}
+
+export const getStaticPaths = (async () => {
+	const posts = await getAllPostsInfo(getCollection('blog'))
+	const tags = aggregateByTag(posts)
+	return Array.from(tags.entries())
+		.map(([tag, posts]) => [
+			{
+				params: { slug: tag },
+				props: { tag, posts },
+			},
+			{
+				params: { slug: encodeURIComponent(tag) },
+				props: { tag, posts },
+			},
+		])
+		.flat()
+}) satisfies GetStaticPaths
+
+let { tag, posts } = Astro.props
+tag = decodeURIComponent(tag)
+---
+
+<HomeLayout>
+	<div class="p-2">
+		<h1 class="text-3xl leading-loose font-extrabold">
+			# {tag}
+		</h1>
+		<ArticleTimeline articles={posts} />
+	</div>
+	<Footer />
+</HomeLayout>

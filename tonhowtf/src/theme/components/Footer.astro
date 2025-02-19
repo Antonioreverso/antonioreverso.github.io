@@ -1,0 +1,19 @@
+---
+import type { ClassValue } from 'clsx'
+import config from '../consts'
+
+export interface Props {
+	class?: ClassValue
+}
+const today = new Date()
+const { class: className } = Astro.props
+---
+
+<footer class:list={['w-full flex justify-center items-center', className]}>
+	&copy;
+	{' '}
+	{today.getFullYear()}
+	{' '}
+	{config.author.name}
+	. All rights reserved.
+</footer>

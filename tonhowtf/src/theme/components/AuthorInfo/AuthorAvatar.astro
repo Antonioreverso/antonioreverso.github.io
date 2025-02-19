@@ -1,0 +1,13 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import config from '../../consts'
+import Avatar from '../ui/avatar.astro'
+
+type Props = HTMLAttributes<'div'>
+---
+
+<Avatar
+	{...Astro.props}
+	url={config.author.avatar.url}
+	alt={config.author.avatar.alt}
+/>

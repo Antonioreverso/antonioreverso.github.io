@@ -1,0 +1,17 @@
+---
+import config from '../../consts'
+
+interface Props {
+	date: Date
+}
+
+const { date } = Astro.props
+
+const formattedDate = date.toLocaleDateString(config.site.locale, {
+	year: 'numeric',
+	month: '2-digit',
+	day: '2-digit',
+})
+---
+
+<time datetime={date.toISOString()}>{formattedDate}</time>

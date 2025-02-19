@@ -1,0 +1,54 @@
+---
+import { HTMLAttributes } from 'astro/type'
+import PagefindTemplates from './PagefindTemplates.astro'
+
+type Props = HTMLAttributes<'div'> & {
+	blur?: boolean
+}
+const { class: className, blur, ...props } = Astro.props
+---
+
+<script>
+	import './PagefindMask'
+	import './PagefindSearchInput'
+	import './PagefindSearchResultItem'
+	import './PagefindSearchResults'
+</script>
+
+<script type="module">
+	if (!window.pagefind) {
+		const pagefind = await import('/pagefind/pagefind.js')
+		pagefind.init()
+		window.pagefind = pagefind
+	}
+</script>
+
+<PagefindTemplates />
+
+<pagefind-search-input
+	class:list={[
+		'input input-bordered flex w-full items-center relative z-10',
+		className,
+	]}
+	{...props}
+>
+	<pagefind-mask
+		class="hidden fixed inset-0 bg-black/50 z-10 transition-all"
+		data-blur={blur ? 'true' : 'false'}></pagefind-mask>
+	<input type="text" class="grow" />
+	<button class="btn btn-circle btn-ghost btn-sm p-0 hidden" name="clear">
+		<div class="i-lets-icons:close-round-light size-7"></div>
+	</button>
+	<pagefind-search-results
+		class="absolute w-full top-full left-0 overflow-y-auto z-10 flex flex-col gap-2 mt-2"
+	></pagefind-search-results>
+</pagefind-search-input>
+
+<style is:global>
+	pagefind-search-input {
+		input,
+		button {
+			@apply z-10 bg-transparent;
+		}
+	}
+</style>

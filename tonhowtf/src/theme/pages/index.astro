@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content'
+import Footer from '../components/Footer.astro'
+import PostCard from '../components/PostCard.astro'
+import HomeLayout from '../layouts/HomeLayout.astro'
+import { getAllPostsInfo } from '../utils/post'
+
+const posts = await getAllPostsInfo(getCollection('blog')).then((posts) =>
+	posts
+		.filter((p) => !!p)
+		.filter((p) => p.isDraft === false)
+		.sort((a, b) => {
+			const cmp1 = b!.ctime.valueOf() - a!.ctime.valueOf()
+			if (cmp1 !== 0) return cmp1
+			return b!.mtime.valueOf() - a!.mtime.valueOf()
+		}),
+)
+---
+
+<HomeLayout>
+	<div class="flex flex-col gap-4 p-2">
+		{posts.map((p) => <PostCard info={p} />)}
+	</div>
+	<Footer />
+</HomeLayout>

@@ -1,0 +1,22 @@
+{
+  "name": "tonho-wtf",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.0.8",
+    "@astrojs/rss": "^4.0.11",
+    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/vue": "^5.0.6",
+    "astro": "^5.3.0",
+    "astro-theme-meo": "github:miaobuao/astro-theme",
+    "unocss": "^66.0.0",
+    "unocss-preset-daisy": "^7.0.0",
+    "vue": "^3.5.13"
+  }
+}

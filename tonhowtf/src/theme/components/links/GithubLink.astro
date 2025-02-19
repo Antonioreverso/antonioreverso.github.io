@@ -1,0 +1,10 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+type Props = HTMLAttributes<'a'>
+
+const { class: className, ...props } = Astro.props
+---
+
+<a class:list={['i-mdi:github', className]} {...props} aria-label="GitHub Link">
+</a>

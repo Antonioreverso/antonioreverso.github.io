@@ -1,0 +1,69 @@
+---
+import { type HTMLAttributes } from 'astro/types'
+import { getCollection } from 'astro:content'
+import numbro from 'numbro'
+import config from '../../consts'
+import { getSafePostsInfo } from '../../utils/post'
+import AuthorAvatar from './AuthorAvatar.astro'
+import { useI18nSource } from '../../i18n'
+import Translate from '../Translate.astro'
+import RssLink from '../links/RssLink.astro'
+
+type Props = HTMLAttributes<'div'>
+const { class: className, ...props } = Astro.props
+const posts = await getSafePostsInfo(getCollection('blog'))
+const totalArticles = posts.length
+const totalWords = posts.reduce((acc, post) => acc + post.reading.words, 0)
+const formattedTotalWords = numbro(totalWords).format({
+	average: true,
+	mantissa: 1,
+})
+const t = useI18nSource()
+---
+
+<div class:list={['flex flex-col items-center gap-4', className]} {...props}>
+	<AuthorAvatar
+		class:list="mask mask-squircle w-28 bg-neutral text-neutral-content font-semibold text-3xl"
+	/>
+	<div class="flex flex-col items-center gap-1 px-1">
+		<span class="flex gap-2 items-center font-semibold break-all">
+			{config.author.name}
+		</span>
+		<span class="text-xs break-all px-1 opacity-80">
+			{config.author.signature}
+		</span>
+	</div>
+	<div class="flex w-full">
+		<div class="flex-1">
+			<div class="text-title">{totalArticles}</div>
+			<div class="text-caption">
+				<Translate t={t.article} />
+			</div>
+		</div>
+		<div class="flex-1">
+			<div class="text-title">{formattedTotalWords}</div>
+			<div class="text-caption">
+				<Translate t={t.wordCount} />
+			</div>
+		</div>
+	</div>
+	{
+		config.pages?.aboutMe && (
+			<a
+				href={config.pages.aboutMe}
+				class="bg-primary hover:bg-opacity-80 text-primary-content p-2 hover:shadow-md hover:shadow-primary/20 w-full cursor-pointer rounded-full text-center"
+			>
+				<Translate t={t.aboutMe} />
+			</a>
+		)
+	}
+</div>
+
+<style scoped>
+	.text-title {
+		@apply text-2xl text-center mt-1 font-medium;
+	}
+	.text-caption {
+		@apply text-sm text-center opacity-80;
+	}
+</style>

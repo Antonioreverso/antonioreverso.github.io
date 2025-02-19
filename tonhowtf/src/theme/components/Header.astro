@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import config from '../consts'
+import AuthorAvatar from './AuthorInfo/AuthorAvatar.astro'
+import Pagefind from './Pagefind'
+import OtherLinks from './AuthorInfo/OtherLinks.astro'
+
+type Props = HTMLAttributes<'header'>
+
+const { class: className, ...props } = Astro.props
+const avatarTargetUrl = Astro.url.pathname === '/' ? '/about' : '/'
+---
+
+<header
+	class:list={['bg-base-100 flex flex-row items-center px-2 gap-2', className]}
+	{...props}
+>
+	<!-- 大于md时展示title -->
+	<div class="md:block hidden">
+		<a class="btn btn-ghost text-xl" href="/">
+			{config.site.title}
+		</a>
+	</div>
+
+	<!-- 大于md时展示 OtherLinks -->
+	<div class="md:block hidden">
+		<OtherLinks
+			class="flex items-center gap-2 px-2"
+			iconClass="size-6 hover:bg-primary"
+		/>
+	</div>
+
+	<!-- 小于md时展示头像 -->
+	<a href={avatarTargetUrl} class="md:hidden">
+		<AuthorAvatar
+			class="mask mask-squircle bg-neutral w-12 text-neutral-content font-semibold text-lg"
+		/>
+	</a>
+
+	<Pagefind class="m-2 md:flex-1 md:max-w-96 md:m-2 md:ml-auto md:mr-4" blur />
+</header>

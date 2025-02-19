@@ -1,0 +1,35 @@
+---
+import config from '../../consts'
+import GitHubLink from '../links/GithubLink.astro'
+import BilibiliLink from '../links/BilibiliLink.astro'
+import type { HTMLAttributes } from 'astro/types'
+import RssLink from '../links/RssLink.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+	iconClass?: string
+}
+
+const { iconClass, ...props } = Astro.props
+---
+
+<div {...props}>
+	{
+		config.links?.github && (
+			<GitHubLink
+				class:list={[iconClass]}
+				href={config.links.github}
+				target="_blank"
+			/>
+		)
+	}
+	{
+		config.links?.bilibili && (
+			<BilibiliLink
+				class:list={[iconClass]}
+				href={config.links.bilibili}
+				target="_blank"
+			/>
+		)
+	}
+	<RssLink href="/rss.xml" class:list={[iconClass]} target="_blank" />
+</div>

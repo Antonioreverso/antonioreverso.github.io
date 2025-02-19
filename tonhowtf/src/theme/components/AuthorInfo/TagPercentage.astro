@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { sortBy } from 'lodash-es'
+import { type IPostInfo, aggregateByTag, getTagLink } from '../../utils/post'
+
+export interface Props extends HTMLAttributes<'div'> {
+	posts: IPostInfo[]
+}
+
+const { posts, class: className, ...divProps } = Astro.props
+const stats = aggregateByTag(posts)
+const counts = sortBy(
+	Array.from(stats.entries()).map(([k, v]) => [k, v.length] as const),
+	(d) => d[1],
+).reverse()
+---
+
+<div class:list={['flex flex-col w-full', className]} {...divProps}>
+	{
+		counts.map(([k, v]) => (
+			<a
+				href={getTagLink(k)}
+				class="flex transition items-center gap-1 p-1 rounded-btn hover:bg-primary hover:bg-opacity-20"
+			>
+				<div class="w-16 text-xs text-center truncate">{k}</div>
+				<progress class="progress flex-1" value={v / posts.length} max="1" />
+			</a>
+		))
+	}
+</div>

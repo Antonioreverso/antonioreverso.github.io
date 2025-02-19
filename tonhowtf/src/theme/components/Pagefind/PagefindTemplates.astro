@@ -1,0 +1,22 @@
+---
+
+---
+
+<template id="template-pagefind-search-result-item">
+	<div class="bg-base-300 shadow-xl p-4 flex flex-col gap-1">
+		<a
+			slot="title"
+			class="text-lg hover:underline break-all items-center after:(i-ion:open-outline content-[''] inline-block vertical-middle size-4 mx-1 -mt-1)"
+		>
+		</a>
+		<div class="excerpt text-base-content text-opacity-85 break-all"></div>
+	</div>
+</template>
+
+<style>
+	.excerpt {
+		mark {
+			@apply bg-primary text-primaryContent rounded-sm mx-0.5 px-0.5;
+		}
+	}
+</style>

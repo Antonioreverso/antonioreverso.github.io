@@ -1,0 +1,13 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+export interface Props extends HTMLAttributes<'div'> {
+	class: string
+}
+
+const { class: className, ...props } = Astro.props
+---
+
+<div class:list={['overflow-y-auto scrollbar-hide', className]} {...props}>
+	<slot />
+</div>
