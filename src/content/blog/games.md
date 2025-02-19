@@ -31,14 +31,21 @@ Simply one of the most cozy games I've ever played. At times I got bored, but th
 | **Platforms** | Windows |
 | **Input**     | Keyboard, Controller |
 | **Playtime**  | 2.5 hours |
-| **Finished at** | 2025-02-x |
+| **Finished at** | 2025-02-19 |
 | **Price**     | R$ 43.99 |
 | **Purchase**  | [Steam](https://store.steampowered.com/app/1206430/The_Unfinished_Swan/) |
 
 An absurdly beautiful game Annapurna knows how to make good games. The beginning of the game is absurdly cool, it's innovative, but the second part starts to get a little boring and monotonous, but the third... The third is perfect. I would say it's a relaxing game, with fun puzzles.
 
-## 
+## Her Story
 
 ---
 
-
+| **Genre**     | Point-and-Click/SimulationDeveloper|
+|--------------|----------------|
+| **Platforms** | Windows |
+| **Input**     | Keyboard |
+| **Playtime**  | 2.5 hours |
+| **Finished at** | 2025-02-x |
+| **Price**     | R$ 32.99 |
+| **Purchase**  | [Steam](https://store.steampowered.com/app/1206430/The_Unfinished_Swan/) |
