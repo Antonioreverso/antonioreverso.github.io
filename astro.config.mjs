@@ -6,7 +6,7 @@ import vue from '@astrojs/vue';
 
 export default defineConfig({
     site: 'https://antonioreverso.github.io',
-    base: 'antonioreverso.github.io',
+    base: '/',
     integrations: [
     theme({
         site: {
