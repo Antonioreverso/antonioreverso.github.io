@@ -53,7 +53,7 @@ An absurdly beautiful game Annapurna knows how to make good games. The beginning
 
 ---
 
-| **Genre**     | Adventure |
+| **Genre**     | First-Person/Adventure |
 |--------------|----------------|
 | **Platforms** | Linux, Mac, Pc |
 | **Input**     | Keyboard |
