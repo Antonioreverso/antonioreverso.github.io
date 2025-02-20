@@ -12,7 +12,7 @@ export default defineConfig({
             title: `Tonhoca`,
             description: 'Soon...',
             locale: 'en-US',
-            url: 'https://antonioreverso.github.io',
+            url: 'https://antonioreverso.github.io/',
         },
         author: {
             name: 'Tonho',
