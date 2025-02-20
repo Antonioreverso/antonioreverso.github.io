@@ -47,4 +47,17 @@ An absurdly beautiful game Annapurna knows how to make good games. The beginning
 | **Playtime**  | 2.5 hours |
 | **Finished at** | 2025-02-x |
 | **Price**     | R$ 32.99 |
-| **Purchase**  | [Steam](https://store.steampowered.com/app/1206430/The_Unfinished_Swan/) |
+| **Purchase**  | [Steam](https://store.steampowered.com/app/368370/Her_Story/) |
+
+## The Stanley Parable
+
+---
+
+| **Genre**     | Adventure |
+|--------------|----------------|
+| **Platforms** | Linux, Mac, Pc |
+| **Input**     | Keyboard |
+| **Playtime**  | 1.5 hours |
+| **Finished at** | 2025-02-x |
+| **Price**     | R$ 46.99 |
+| **Purchase**  | [Steam](https://store.steampowered.com/app/221910/) |
