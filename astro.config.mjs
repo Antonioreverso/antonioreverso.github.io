@@ -5,14 +5,14 @@ import { defineConfig } from 'astro/config'
 import vue from '@astrojs/vue';
 
 export default defineConfig({
-    site: 'https://antonioreverso.github.io',
+    site: 'https://tonhowtf.github.io',
     integrations: [
     theme({
         site: {
             title: `Tonhoca`,
             description: 'Soon...',
             locale: 'en-US',
-            url: 'https://antonioreverso.github.io/',
+            url: 'https://tonhowtf.github.io/',
         },
         author: {
             name: 'Tonho',
